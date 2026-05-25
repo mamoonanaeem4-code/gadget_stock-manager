@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tech Vault Catalog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="display:block; background-color:#0f172a; padding:20px;">
+
+  <div class="dashboard-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1 style="text-align: left; margin: 0;">Device Stock Inventory</h1>
+      <a href="index.html" class="btn-submit" style="text-decoration: none; padding: 10px 20px;">+ Register Device</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Device Model / Name</th>
+            <th>Arrival Date</th>
+            <th>SKU / Serial No.</th>
+            <th>Price (USD)</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $conn = new mysqli("localhost", "root", "", "structure");
+          if (!$conn->connect_error) {
+            $result = $conn->query("SELECT * FROM products ORDER BY id DESC");
+
+            if ($result && $result->num_rows > 0) {
+              while($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td><span style='color:#64748b;'>#".$row['id']."</span></td>
+                        <td style='font-weight:600; color:#fff;'>".htmlspecialchars($row['product'])."</td>
+                        <td>".htmlspecialchars($row['date'])."</td>
+                        <td><code style='color:#a855f7;'>".htmlspecialchars($row['model'])."</code></td>
+                        <td style='font-weight:600; color:#06b6d4;'>$".number_format($row['price'], 2)."</td>
+                        <td><span class='badge'>".htmlspecialchars($row['category'])."</span></td>
+                      </tr>";
+              }
+            } else {
+              echo "<tr><td colspan='6' style='text-align:center; padding: 40px 0; color:#94a3b8;'>No devices currently registered in the database.</td></tr>";
+            }
+            $conn->close();
+          }
+          ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>
